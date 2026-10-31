@@ -1,0 +1,23 @@
+# Render Blueprint: Dashboard -> New -> Blueprint -> pick this repo.
+# Render asks for the secret values (sync: false) when you create it.
+services:
+  - type: web
+    name: weekly-metrics
+    runtime: node
+    plan: free            # free spins down after 15 min idle (first load ~1 min). 'starter' stays on.
+    region: singapore
+    buildCommand: npm install
+    startCommand: node server.mjs
+    healthCheckPath: /healthz
+    autoDeploy: true      # redeploys on every push to the repo
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: GLIDE_TOKEN
+        sync: false
+      - key: EXCHANGE_RATE_API_KEY
+        sync: false
+      - key: ACCESS_KEY   # optional: then embed https://<service>.onrender.com/?k=<ACCESS_KEY>
+        sync: false
+      - key: CACHE_SECONDS
+        value: "60"

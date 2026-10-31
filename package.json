@@ -1,0 +1,14 @@
+{
+  "name": "weekly-metrics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node test/verify.mjs",
+    "fetch": "node --env-file-if-exists=.env scripts/fetch-data.mjs"
+  },
+  "engines": {
+    "node": ">=22.9"
+  }
+}

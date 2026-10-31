@@ -1,0 +1,6 @@
+data/raw.json
+data/cards.json
+node_modules/
+_site/
+.env
+.cache/

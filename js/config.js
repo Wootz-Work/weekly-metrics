@@ -193,7 +193,7 @@ export const CONFIG = {
   // ---------------------------------------------------------------------------
   page: {
     title: 'Weekly Metrics',
-    showHeader: true,         // the line with "Data as of …"
+    showHeader: true,         // the line with "As of …"
     showTitle: false,         // the "Weekly Metrics" heading (browser tab title is always set)
     autoRefreshMinutes: 0,    // 0 = off (data is fetched when the page is opened / reloaded).
   },

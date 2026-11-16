@@ -12,6 +12,11 @@ const showDebug = new URLSearchParams(location.search).has('debug');
 
 const useSample = new URLSearchParams(location.search).has('sample');
 
+// "As of 16 Nov 2026, 21:56 IST" — same date format as the drill-down tables
+const AS_OF_FORMAT = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false,
+});
+
 // Rows behind the cards of the last run() (for the drill-down screens).
 let lastDrill = null;
 
@@ -76,8 +81,9 @@ async function run() {
     }
     render(cards);
     lastDrill = drill; // static-cards mode has no rows -> no drill-down
-    const asOf = raw.fetchedAt ? new Date(raw.fetchedAt).toLocaleString() : '';
-    $status.textContent = asOf ? `Data as of ${asOf}` : '';
+    // Always India time (the weeks are IST too), whatever the viewer's device clock says
+    const asOf = raw.fetchedAt ? `${AS_OF_FORMAT.format(new Date(raw.fetchedAt))} IST` : '';
+    $status.textContent = asOf ? `As of ${asOf}` : '';
     if (showDebug) {
       $debug.hidden = false;
       $debug.textContent = JSON.stringify(debug, null, 2);

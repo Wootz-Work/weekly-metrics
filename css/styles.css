@@ -1,7 +1,7 @@
 /* Page shell around the cards. The cards themselves carry their own inline
    styles (copied verbatim from the Glide JS columns) — do not restyle them here. */
 :root {
-  --page-bg: #161616;      /* Glide dark-theme screen background (adjust if needed) */
+  --page-bg: #171717;      /* page background */
   --text: #e6e6e6;
   --muted: #8a8a8a;
   --gap: 20px;             /* space between components in the Glide container */

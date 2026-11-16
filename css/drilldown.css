@@ -1,8 +1,8 @@
 /* Drill-down screen: the Glide detail screen opened as an overlay
    (dark theme, Glide table style "Striped"). The cards themselves are not restyled. */
 :root {
-  --dd-bg: #1a1a1a;
-  --dd-bar: #1a1a1a;
+  --dd-bg: #1f1f1f;        /* table panel */
+  --dd-bar: #1f1f1f;       /* panel title bar */
   --dd-border: #2a2a2a;
   --dd-text: #e8e8e8;
   --dd-head: #9a9a9a;

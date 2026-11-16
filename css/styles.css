@@ -1,6 +1,5 @@
 /* Page shell around the cards. The cards themselves carry their own inline
-   styles (copied verbatim from the Glide JS columns) — do not restyle them here.
-   Only exception: the size of the "compact" cards in the right column (below). */
+   styles (copied verbatim from the Glide JS columns) — do not restyle them here. */
 :root {
   --page-bg: #161616;      /* Glide dark-theme screen background (adjust if needed) */
   --text: #e6e6e6;
@@ -33,9 +32,8 @@ html, body {
 .status.error { color: #FF5252; }
 
 /* ---------------------------------------------------------------------------
-   Layout: 4 equal columns, like the Glide container.
-   Columns 1-3: Received / Quoted / Won, then Quoted Value / Won Value / Avg. Quote time.
-   Column 4:    Total Open / Total Sampling / New Customers.
+   Layout: 4 equal columns, like the Glide container (2 rows of 4 cards).
+   Cards in the same row share one height.
    --------------------------------------------------------------------------- */
 .layout {
   max-width: var(--max-width);
@@ -44,49 +42,15 @@ html, body {
   display: grid;
   gap: var(--gap);
   grid-template-columns: 1fr;
-  align-items: start;
-}
-.main-col, .side-col { min-width: 0; display: grid; gap: var(--gap); }
-
-.row {
-  display: grid;
-  gap: var(--gap);
-  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 .slot { min-width: 0; display: flex; flex-direction: column; }
 .slot[hidden] { display: none; }
-.slot > div { flex: 1; }          /* cards in a row share one height */
+.slot:empty { display: none; }    /* nothing to show (loading / empty card) */
+.slot > div { flex: 1; }
 
-/* Small caption above a card (Weekly / Monthly) */
-.slot[data-caption]::before {
-  content: attr(data-caption);
-  display: block;
-  margin-bottom: 8px;
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  color: #555;
-}
-.slot[data-caption]:empty::before { visibility: hidden; }   /* no caption while loading / empty */
-
-/* Column 4: the big-number cards made shorter */
-.compact > div {
-  min-height: 0 !important;
-  padding: 22px 16px !important;
-}
-.compact > div > p:first-child { font-size: 12px !important; }
-.compact > div > p:nth-child(2) { font-size: 56px !important; margin-top: 10px !important; }
-.compact > div > p:nth-child(3) { margin-top: 10px !important; }
-
-/* Medium screens: 3 columns, the column-4 cards as a row on top */
-@media (min-width: 640px) {
-  .row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .side-col { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; order: -1; }
-}
-/* Wide screens (Glide web embed on desktop): 4 equal columns = 3 + 1 */
-@media (min-width: 900px) {
-  .layout { grid-template-columns: minmax(0, calc((100% - 3 * var(--gap)) * 0.75 + 2 * var(--gap))) minmax(0, 1fr); }
-  .side-col { grid-template-columns: 1fr; order: 0; }
-}
+@media (min-width: 640px) { .layout { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .layout { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .debug {
   max-width: var(--max-width);

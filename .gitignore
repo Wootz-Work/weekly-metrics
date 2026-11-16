@@ -6,3 +6,6 @@ _site/
 .cache/
 .env.*
 !.env.example
+
+# reference material for the drill-down (not part of the app)
+weekly-metrics 2/

@@ -52,6 +52,14 @@ export const CONFIG = {
         currentStatus: '6P9Ok',     // "Current status"  (text)
         archive: 'oaHXQ',           // "archive"         (boolean)
         customerName: 'BietT',      // "Customer name"   (text)
+        // --- drill-down screens only (card click -> table) ---
+        title: 'QdiyR',             // "Title"                      (text)
+        confidential: 'CI0IM',      // "Confidential"               (boolean) -> "ⓒ " before the title
+        costingOrderOfMagnitude: 'AEa95', // "Costing order of magnitude" (text, e.g. "xx,xxx") -> "Size ($)"
+        rfqCreatedDate: '3Wgie',    // "RFQ created date"           -> sort key
+        publishedLiveDate: '7esej', // "Published Live Date"        (date) -> "Active Since"
+        internalPoc: 'epQFl',       // "Internal PoC"               (email) -> PoC name via Admins
+        sharingEnabled: '2RzbU',    // "Sharing enabled?"           (boolean) -> "Image" icon when unchecked
       },
     },
 
@@ -80,6 +88,8 @@ export const CONFIG = {
         quoteCurrency: 'y0J47',     // "Quote currency"    (text)
         wonValue: 'XVoWk',          // "Won value"         (number) -- only copied into the JSON, not used in maths
         wonCurrency: 'k6EyO',       // "Won Currency"      (text)   -- only copied into the JSON, not used in maths
+        // --- drill-down screens only ---
+        statusUpdatedBy: 'dm2TM',   // "Status updated by" (text, a person's name)
       },
     },
 
@@ -96,7 +106,7 @@ export const CONFIG = {
       },
     },
 
-    // Glide table: "Purchase Orders" — only needed for the hidden "Won Value" card.
+    // Glide table: "Purchase Orders" — for the "Won Value" card.
     purchaseOrders: {
       table: 'native-table-992ebb81-8eed-4e60-b723-aa4e0efa6af5',
       fields: {
@@ -105,11 +115,39 @@ export const CONFIG = {
         addedToProjects: '4L30B',   // "Added To Projects"          (text)
         wonValueLocal: 'FbEcY',     // "Won value (Local currency)" (number)
         customer: '6VtPa',          // "Customer"                   (text)
+        // --- drill-down screens only ---
+        defer: 'khlL7',             // "Defer"                      (boolean)
+        fromName: 'mea1j',          // "From name"                  (text)
+        subjectLine: 'WG576',       // "Subject line"               (text)
       },
-      // ASSUMED (not opened in Glide): "Rel-customer" matches Customer -> All companies.<this field>,
-      // then "Lookup customer currency" = company.Local currency -> Currency rates -> "USD Conversion rate".
-      // Verify in Glide before switching the Won Value card on.
+      // "Rel-customer" matches Customer -> All companies.<this field>, then
+      // company.Local currency -> Currency rates -> "USD Conversion rate".
+      // (Confirmed: the Won Value card matches Glide's to 0.1K on 2 Nov 2026.)
       customerMatchesCompanyField: 'name',
+    },
+
+    // Glide table: "Admins" (the app's user profiles) — drill-down only:
+    // RFQ "Internal PoC" email -> Admins Email (lower-cased) -> Name, shown in the "PoC" column.
+    admins: {
+      table: 'native-table-qQtBfW3I3zbQYJd4b3oF',
+      fields: {
+        email: 'Email',             // "Email"
+        name: 'Name',               // "Name"
+      },
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Drill-down screens (click a card -> table of the rows behind its number)
+  // ---------------------------------------------------------------------------
+  drilldown: {
+    locale: 'en-GB',                // "27 Oct 2026", "31 Oct 2026, 13:30"
+    timeZone: 'Asia/Kolkata',
+    pageSize: 24,                   // Glide table "Page size"
+    // Action above the Won POs table (same text + target as the Glide screen)
+    wonPOsLink: {
+      title: "Empty projects and Value need to be 'Accepted' via Browser Won section",
+      url: 'https://wootz-browser.glide.page/dl/d0a5f4',
     },
   },
 
@@ -128,7 +166,7 @@ export const CONFIG = {
   // ---------------------------------------------------------------------------
   components: {
     won: true,           // "Won / JS Card"            (Glide: visible when Email is empty)
-    wonValue: true,      // "Won Value JS Card"        (Glide: visible when Email is empty)
+    wonValue: false,     // "Won Value JS Card"        (Glide: visible when Email is empty)
     totalQuoted: false,  // "Total Quoted/JS Card ..." (Glide: Role is Admin AND Email is empty)
   },
 

@@ -403,5 +403,27 @@ export function computeMetrics(raw, config, nowArg) {
     },
   };
 
-  return { cards, debug };
+  // Rows behind each card, for the drill-down screens (js/drilldown.js). These are
+  // the SAME arrays and helpers the cards above were computed from, so a screen
+  // always lists exactly what its card counts.
+  const drill = {
+    now,
+    rows: {
+      received: rfqsReceived,
+      won: rfqsWon,
+      customers: customersAdded,
+      quoted: queryStatusUpdateQuoted,
+      totalOpen: rfqsActive,
+      totalSampling: rfqsSampling,
+      wonValue: queryStatusUpdateWon,
+      totalQuoted: totalRfqsQuoted,
+    },
+    tables: {
+      purchaseOrders,
+      admins: T.admins ? mapRows(raw.admins, T.admins.fields) : [],
+    },
+    fn: { quoteValueUsd, lastUpdateDateFinal, poWonValueUsd },
+  };
+
+  return { cards, debug, drill };
 }

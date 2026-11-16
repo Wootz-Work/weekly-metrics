@@ -5,7 +5,8 @@
 // =============================================================================
 import { applyConversionRates } from './exchangeRates.js';
 
-export const TABLE_KEYS = ['rfqs', 'companies', 'statusUpdates', 'currencyRates', 'purchaseOrders'];
+// 'admins' is only used by the drill-down screens (PoC names).
+export const TABLE_KEYS = ['rfqs', 'companies', 'statusUpdates', 'currencyRates', 'purchaseOrders', 'admins'];
 
 async function fetchV1(tableName, { appId, token }) {
   const rows = [];
@@ -65,7 +66,7 @@ function pick(rows, fields) {
 export async function fetchAllRaw(config, token, exchange) {
   // tables in parallel; row order inside each table is kept
   const out = {};
-  await Promise.all(TABLE_KEYS.map(async (key) => {
+  await Promise.all(TABLE_KEYS.filter((key) => config.tables[key]).map(async (key) => {
     const t = config.tables[key];
     out[key] = pick(await fetchTable(t, config.glide, token), t.fields);
   }));

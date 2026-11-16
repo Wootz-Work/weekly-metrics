@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Metrics</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/drilldown.css">
 </head>
 <body>
   <header id="header" class="header">
@@ -12,27 +13,20 @@
     <span id="status" class="status">Loading…</span>
   </header>
 
-  <!-- Each card goes into the slot with its key (see js/app.js). Cards are unchanged. -->
+  <!-- Each card goes into the slot with its key (see js/app.js). Cards are unchanged.
+       Row 1: New Customers, Received, Quoted, Won. Row 2: Quoted Value, Avg. Quote time, Total Open, Total Sampling.
+       Won Value / Total Quoted only show when switched on in js/config.js (components). -->
   <main id="grid" class="layout">
-    <section class="main-col">
-      <div class="row">
-        <div class="slot" data-slot="received"></div>
-        <div class="slot" data-slot="quoted"></div>
-        <div class="slot" data-slot="won"></div>
-      </div>
-      <div class="row">
-        <div class="slot" data-slot="quotedValue" data-caption="Weekly"></div>
-        <div class="slot" data-slot="wonValue" data-caption="Monthly"></div>
-        <div class="slot" data-slot="quoteTimeline" data-caption="Weekly"></div>
-      </div>
-    </section>
-
-    <aside class="side-col">
-      <div class="slot compact" data-slot="totalOpen"></div>
-      <div class="slot compact" data-slot="totalSampling"></div>
-      <div class="slot" data-slot="customers"></div>
-      <div class="slot compact" data-slot="totalQuoted"></div>
-    </aside>
+    <div class="slot" data-slot="customers"></div>
+    <div class="slot" data-slot="received"></div>
+    <div class="slot" data-slot="quoted"></div>
+    <div class="slot" data-slot="won"></div>
+    <div class="slot" data-slot="quotedValue"></div>
+    <div class="slot" data-slot="quoteTimeline"></div>
+    <div class="slot" data-slot="totalOpen"></div>
+    <div class="slot" data-slot="totalSampling"></div>
+    <div class="slot" data-slot="wonValue"></div>
+    <div class="slot" data-slot="totalQuoted"></div>
   </main>
 
   <pre id="debug" class="debug" hidden></pre>

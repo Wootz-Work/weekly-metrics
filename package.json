@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file-if-exists=.env server.mjs",
-    "test": "node test/verify.mjs",
+    "test": "node test/verify.mjs && node test/verify-drilldown.mjs",
     "fetch": "node --env-file-if-exists=.env scripts/fetch-data.mjs"
   },
   "engines": {

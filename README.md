@@ -4,7 +4,7 @@ This is a small web service (one Node file, no dependencies) you can host on Ren
 
 - **Logic:** every Glide JavaScript column is copied unchanged in `js/glideColumns.js`. The card HTML is copied unchanged in `js/cards.js`.
 - **Other Glide columns:** the Query, Lookup, If-Then-Else, Math, Rollup, Template, Joined List and JSON Object columns are rebuilt in `js/pipeline.js`. The Glide API only returns basic (stored) columns, so these have to be recomputed.
-- **Hidden cards:** Won, Won Value and Total Quoted are behind switches in `js/config.js`. Switch them on or off with `components` in `js/config.js` (Won and Won Value are ON; Total Quoted is OFF).
+- **Hidden cards:** Won, Won Value and Total Quoted are behind switches in `js/config.js`. Switch them on or off with `components` in `js/config.js` (Won is ON; Won Value and Total Quoted are OFF).
 
 ```
 index.html              page shell (Glide container, 4 columns)
@@ -16,11 +16,15 @@ js/pipeline.js          Glide Query/Lookup/If/Math/Rollup/Template/Join/JSON re-
 js/glideApi.js          Glide API fetch (v1 queryTables or v2 Big Tables), keeps table order
 js/exchangeRates.js     Currency rates "Currency API response" -> "conversion rate" (exchangerate-api.com)
 .env                    your keys: GLIDE_TOKEN, EXCHANGE_RATE_API_KEY (gitignored; template in .env.example)
-js/app.js               loads data, computes, renders
+js/app.js               loads data, computes, renders, opens the drill-down on card click
+js/drilldown.js         drill-down screens: rows behind each card, Glide columns, sort
+js/drilldownView.js     drill-down overlay (table, 24 rows/page, ✕ / Esc)
+css/drilldown.css       drill-down overlay styles
 server.mjs              web service: serves the page + /api/data (fetches Glide on page load)
 render.yaml             Render deploy config
 scripts/fetch-data.mjs  CLI check: fetches Glide -> data/raw.json + data/cards.json, prints warnings
-test/verify.mjs         verification suite (npm test)
+test/verify.mjs         card verification suite (npm test)
+test/verify-drilldown.mjs  drill-down verification suite (npm test)
 data/sample-raw.json    synthetic data reproducing the Glide screen of 30 Oct 2026
 ```
 
@@ -94,8 +98,22 @@ The defaults are the most literal reading. If one number differs from Glide, try
 - **Duplicate or debug columns:** "JS value quoted" (a copy of "JS RFQs quoted value"), "Count rfqs received", "Count rfqs Open", "Current Week and Last Week" (ported but only shown in `?debug`).
 - **Unused helpers:** the user-specific `… static` text columns, and the "Filter date" and "Last 3/6 months" helpers.
 
-## Assumptions to check before switching on Won Value
-The Purchase Orders "USD Conversion rate" chain was not opened in Glide. The code assumes:
-- Customer → All companies, matched on `customerMatchesCompanyField`.
-- The company's Local currency → Currency rates.
-- Won value USD = Won value (Local currency) ÷ rate.
+## Won Value: currency chain
+Customer → All companies (matched on `customerMatchesCompanyField`) → Local currency → Currency rates, then Won value USD = Won value (Local currency) ÷ rate. This was confirmed against Glide on 2 Nov 2026: the card matched to 0.1K. POs with no Customer count as $0, in Glide as well.
+
+## Drill-down: click a card → the rows behind its number
+Clicking a card opens a table, like the Glide screen it replaces. **Each table lists exactly the rows its card counts.** `computeMetrics()` in `js/pipeline.js` hands the drill-down the same filtered rows and helpers the cards are computed from (`drill`). `js/drilldown.js` then only keeps the weeks or months drawn on the card (this one + the 4 before), sorts like Glide and builds Glide's columns.
+
+| Card | Screen | Rows | Sort |
+|---|---|---|---|
+| Received | RFQs Received | the card's RFQs (not archived), weeks −4…current | RFQ created date ↓ |
+| Quoted, Quoted Value, Avg. Quote time | RFQs Quoted | the card's Quoted status updates (RFQ not archived) | Status updated at ↓ |
+| Won | RFQs Won | the card's Won status updates | Status updated at ↓ |
+| New Customers | New Customers | the card's companies | Added date ↓ |
+| Total Open / Total Sampling | Open RFQs / Sampling RFQs | the card's RFQs (all of them) | RFQ created date ↓ |
+| Won Value | Won POs | the card's POs (Verified, months −4…current) + POs still to accept (not deferred, Project or Value empty), with a link to Wootz.Browser | Created at ↓ |
+
+- **Quoted and Won screens list every status update.** Their cards count *unique* RFQs per week, so an RFQ quoted twice in a week is 1 on the card and 2 rows. The Quote value column adds up to the Quoted Value card.
+- **Week pills use the cards' rule** (Monday 00:00 → Sunday 23:59 IST). The Won POs Month pills use the Won Value card's months.
+- **No extra data requests:** a click reuses the data already loaded for the cards.
+- **Extra columns:** the drill-down adds columns to `js/config.js` (marked "drill-down") and the **Admins** table, which is used only for PoC names.

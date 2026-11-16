@@ -1,0 +1,90 @@
+/* Drill-down screen: the Glide detail screen opened as an overlay
+   (dark theme, Glide table style "Striped"). The cards themselves are not restyled. */
+:root {
+  --dd-bg: #1a1a1a;
+  --dd-bar: #1a1a1a;
+  --dd-border: #2a2a2a;
+  --dd-text: #e8e8e8;
+  --dd-head: #9a9a9a;
+  --dd-stripe: #222222;
+  --dd-pill-bg: rgba(18, 168, 186, 0.18);
+  --dd-pill-text: #36c3d4;
+}
+
+.dd-clickable .slot[data-slot] > div { cursor: pointer; }
+
+body.dd-open { overflow: hidden; }
+
+/* A panel on top of the metrics page (the page stays visible, dimmed, behind it).
+   Near the top, so inside a tall Glide Web Embed it opens close to the cards. */
+.dd-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 40px 24px;
+}
+.dd-overlay[hidden] { display: none; }
+
+.dd-screen {
+  width: min(1000px, 100%);
+  max-height: 100%;
+  background: var(--dd-bg);
+  color: var(--dd-text);
+  border: 1px solid var(--dd-border);
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.dd-bar {
+  flex: none;
+  display: grid; grid-template-columns: 40px 1fr 40px; align-items: center;
+  height: 56px; padding: 0 12px; border-bottom: 1px solid var(--dd-border);
+  background: var(--dd-bar);
+}
+.dd-title { margin: 0; text-align: center; font-size: 17px; font-weight: 600; }
+.dd-close { background: none; border: 0; color: var(--dd-text); font-size: 20px; cursor: pointer; }
+
+.dd-body { flex: 1; overflow: auto; padding: 8px 20px 24px; }
+
+.dd-link {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin: 12px 0; color: var(--dd-text); text-decoration: none; font-size: 15px;
+}
+.dd-link-arrow { color: var(--dd-pill-text); font-size: 18px; }
+.dd-table-title { font-size: 22px; font-weight: 700; margin: 16px 0 8px; }
+
+.dd-table-wrap { overflow-x: auto; }
+.dd-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.dd-table th {
+  text-align: left; font-size: 11px; font-weight: 600; color: var(--dd-head);
+  text-transform: uppercase; letter-spacing: 0.3px; padding: 10px 6px; white-space: nowrap;
+}
+.dd-table td { padding: 11px 6px; vertical-align: middle; }
+.dd-table tbody tr:nth-child(odd) { background: var(--dd-stripe); }   /* Striped */
+.dd-table td.dd-col-html svg { display: block; }
+.dd-table td.dd-col-number { white-space: nowrap; }
+.dd-empty { color: var(--dd-head); text-align: center; padding: 24px; }
+
+.dd-person { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.dd-person-icon { flex: none; color: var(--dd-head); }
+
+.dd-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  background: var(--dd-pill-bg); color: var(--dd-pill-text); font-size: 11px; white-space: nowrap;
+}
+
+.dd-pager { display: flex; justify-content: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+.dd-page {
+  min-width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--dd-border);
+  background: transparent; color: var(--dd-text); cursor: pointer;
+}
+.dd-page.active { background: #12a8ba; border-color: #12a8ba; color: #fff; }
+.dd-page:disabled { opacity: 0.35; cursor: default; }
+
+@media (max-width: 640px) {
+  .dd-overlay { padding: 12px; }
+  .dd-body { padding: 4px 12px 20px; }
+  .dd-table { font-size: 13px; }
+}

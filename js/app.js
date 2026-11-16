@@ -2,6 +2,8 @@ import { CONFIG } from './config.js';
 import { computeMetrics } from './pipeline.js';
 import { fetchAllRaw } from './glideApi.js';
 import { fetchExchangeRates } from './exchangeRates.js';
+import { computeDrilldown } from './drilldown.js';
+import { openDrilldown, attachCardClicks } from './drilldownView.js';
 
 const $grid = document.getElementById('grid');
 const $status = document.getElementById('status');
@@ -9,6 +11,9 @@ const $debug = document.getElementById('debug');
 const showDebug = new URLSearchParams(location.search).has('debug');
 
 const useSample = new URLSearchParams(location.search).has('sample');
+
+// Rows behind the cards of the last run() (for the drill-down screens).
+let lastDrill = null;
 
 async function loadRaw() {
   if (useSample) {
@@ -55,7 +60,7 @@ function render(cards) {
 
 async function run() {
   try {
-    let raw, cards, debug;
+    let raw, cards, debug, drill = null;
     if (CONFIG.dataMode === 'static-cards' && !useSample) {
       const res = await fetch(`${CONFIG.staticCardsUrl}?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Could not load ${CONFIG.staticCardsUrl} (HTTP ${res.status})`);
@@ -67,9 +72,10 @@ async function run() {
       cards = cards.map((c) => (c.key in sw ? { ...c, visible: sw[c.key] } : c));
     } else {
       raw = await loadRaw();
-      ({ cards, debug } = computeMetrics(raw.tables, useSample ? sampleConfig() : CONFIG));
+      ({ cards, debug, drill } = computeMetrics(raw.tables, useSample ? sampleConfig() : CONFIG));
     }
     render(cards);
+    lastDrill = drill; // static-cards mode has no rows -> no drill-down
     const asOf = raw.fetchedAt ? new Date(raw.fetchedAt).toLocaleString() : '';
     $status.textContent = asOf ? `Data as of ${asOf}` : '';
     if (showDebug) {
@@ -86,6 +92,13 @@ async function run() {
 document.title = CONFIG.page.title;
 document.getElementById('title').textContent = CONFIG.page.title;
 if (!CONFIG.page.showHeader) document.getElementById('header').hidden = true;
+
+// Click a card -> table of the rows behind its number. Uses the data already
+// loaded for the cards: no new request to the server or to Glide.
+attachCardClicks($grid, (cardKey) => {
+  if (!lastDrill) return;
+  openDrilldown(computeDrilldown(cardKey, lastDrill, CONFIG), { pageSize: CONFIG.drilldown.pageSize });
+});
 
 run();
 if (CONFIG.page.autoRefreshMinutes > 0) {

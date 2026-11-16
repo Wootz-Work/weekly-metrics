@@ -91,6 +91,7 @@ async function run() {
 
 document.title = CONFIG.page.title;
 document.getElementById('title').textContent = CONFIG.page.title;
+if (!CONFIG.page.showTitle) document.getElementById('title').hidden = true;
 if (!CONFIG.page.showHeader) document.getElementById('header').hidden = true;
 
 // Click a card -> table of the rows behind its number. Uses the data already

@@ -15,13 +15,14 @@
 
 body.dd-open { overflow: hidden; }
 
-/* A panel on top of the metrics page (the page stays visible, dimmed, behind it).
-   Near the top, so inside a tall Glide Web Embed it opens close to the cards. */
+/* A panel on top of the metrics page; the page behind keeps its colours.
+   It is centred in the part of the page that is on screen: js/drilldownView.js sets the
+   top/bottom padding from that visible area (inside the Glide Web Embed too). */
 .dd-overlay {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex; justify-content: center; align-items: flex-start;
-  padding: 40px 24px;
+  background: transparent;
+  display: flex; justify-content: center; align-items: center;
+  padding: 24px;
 }
 .dd-overlay[hidden] { display: none; }
 
@@ -30,9 +31,9 @@ body.dd-open { overflow: hidden; }
   max-height: 100%;
   background: var(--dd-bg);
   color: var(--dd-text);
-  border: 1px solid var(--dd-border);
+  border: 1px solid #3a3a3a;
   border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   display: flex; flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

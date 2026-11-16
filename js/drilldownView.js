@@ -17,6 +17,39 @@ const PERSON_ICON =
 
 let current = null; // { data, page, pageSize }
 
+// ---------------------------------------------------------------------------
+// Centre the panel in the part of this page that is ON SCREEN.
+// Inside the Glide Web Embed this page is an iframe that can be taller than the
+// screen; it cannot read Glide's scroll position, but IntersectionObserver
+// reports which slice of our viewport is visible. Without it: the whole viewport.
+// ---------------------------------------------------------------------------
+const EDGE = 16;          // gap between the panel and the visible edges
+const MIN_AREA = 320;     // if less than this is visible, use the whole viewport
+let visibleArea = null;   // { top, bottom } in viewport pixels, or null = whole viewport
+
+function watchVisibleArea() {
+  if (!('IntersectionObserver' in window)) return;
+  const probe = document.createElement('div');   // covers our viewport, invisible
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;inset:0;visibility:hidden;pointer-events:none';
+  document.body.appendChild(probe);
+  const threshold = Array.from({ length: 101 }, (_, i) => i / 100); // re-check every 1% scrolled
+  new IntersectionObserver(([e]) => {
+    const r = e.intersectionRect;
+    visibleArea = e.isIntersecting && r.height >= MIN_AREA ? { top: r.top, bottom: r.bottom } : null;
+    if (current) placePanel();
+  }, { threshold }).observe(probe);
+}
+
+function placePanel() {
+  const el = document.getElementById('dd-overlay');
+  const h = window.innerHeight;
+  const top = visibleArea ? Math.max(0, visibleArea.top) : 0;
+  const bottom = visibleArea ? Math.min(h, visibleArea.bottom) : h;
+  el.style.paddingTop = `${top + EDGE}px`;
+  el.style.paddingBottom = `${h - bottom + EDGE}px`;
+}
+
 function cellHtml(col, value) {
   if (col.type === 'html') return value || '';   // icon SVG built in js/drilldown.js (trusted constant)
   if (col.type === 'pill') return value ? `<span class="dd-pill">${esc(value)}</span>` : '';
@@ -85,6 +118,7 @@ function ensureOverlay() {
       }
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && current) closeDrilldown(); });
+    window.addEventListener('resize', () => { if (current) placePanel(); });
   }
   return el;
 }
@@ -93,6 +127,7 @@ export function openDrilldown(data, { pageSize = 24 } = {}) {
   const el = ensureOverlay();
   current = { data, page: 1, pageSize };
   render();
+  placePanel();
   el.hidden = false;
   document.body.classList.add('dd-open');
 }
@@ -111,4 +146,5 @@ export function attachCardClicks(gridEl, onCardClick) {
     if (slot && gridEl.contains(slot) && !slot.hidden && slot.firstElementChild) onCardClick(slot.dataset.slot);
   });
   gridEl.classList.add('dd-clickable');
+  watchVisibleArea(); // from page load, so the first panel already opens in the right place
 }

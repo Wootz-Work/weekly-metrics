@@ -12,8 +12,28 @@
     <span id="status" class="status">Loading…</span>
   </header>
 
-  <!-- Glide: one Container, layout "4 columns", 10 Rich Text components -->
-  <main id="grid" class="grid"></main>
+  <!-- Each card goes into the slot with its key (see js/app.js). Cards are unchanged. -->
+  <main id="grid" class="layout">
+    <section class="main-col">
+      <div class="row">
+        <div class="slot" data-slot="received"></div>
+        <div class="slot" data-slot="quoted"></div>
+        <div class="slot" data-slot="won"></div>
+      </div>
+      <div class="row">
+        <div class="slot" data-slot="quotedValue" data-caption="Weekly"></div>
+        <div class="slot" data-slot="wonValue" data-caption="Monthly"></div>
+        <div class="slot" data-slot="quoteTimeline" data-caption="Weekly"></div>
+      </div>
+    </section>
+
+    <aside class="side-col">
+      <div class="slot compact" data-slot="totalOpen"></div>
+      <div class="slot compact" data-slot="totalSampling"></div>
+      <div class="slot" data-slot="customers"></div>
+      <div class="slot compact" data-slot="totalQuoted"></div>
+    </aside>
+  </main>
 
   <pre id="debug" class="debug" hidden></pre>
 

@@ -4,7 +4,7 @@ This is a small web service (one Node file, no dependencies) you can host on Ren
 
 - **Logic:** every Glide JavaScript column is copied unchanged in `js/glideColumns.js`. The card HTML is copied unchanged in `js/cards.js`.
 - **Other Glide columns:** the Query, Lookup, If-Then-Else, Math, Rollup, Template, Joined List and JSON Object columns are rebuilt in `js/pipeline.js`. The Glide API only returns basic (stored) columns, so these have to be recomputed.
-- **Hidden cards:** Won, Won Value and Total Quoted are behind switches in `js/config.js`. They are **OFF** by default.
+- **Hidden cards:** Won, Won Value and Total Quoted are behind switches in `js/config.js`. Switch them on or off with `components` in `js/config.js` (Won and Won Value are ON; Total Quoted is OFF).
 
 ```
 index.html              page shell (Glide container, 4 columns)

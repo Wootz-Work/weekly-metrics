@@ -123,11 +123,12 @@ export const CONFIG = {
   },
 
   // ---------------------------------------------------------------------------
-  // Hidden components (hidden in Glide by visibility rules). Keep OFF.
+  // Components that are hidden in Glide by visibility rules (Email / Role). The embed cannot
+  // know the Glide user, so each switch here shows or hides the card for EVERYONE with the URL.
   // ---------------------------------------------------------------------------
   components: {
-    won: false,          // "Won / JS Card"            (Glide: visible when Email is empty)
-    wonValue: false,     // "Won Value JS Card"        (Glide: visible when Email is empty)
+    won: true,           // "Won / JS Card"            (Glide: visible when Email is empty)
+    wonValue: true,      // "Won Value JS Card"        (Glide: visible when Email is empty)
     totalQuoted: false,  // "Total Quoted/JS Card ..." (Glide: Role is Admin AND Email is empty)
   },
 

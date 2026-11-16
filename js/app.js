@@ -42,16 +42,14 @@ function sampleConfig() {
   return { ...CONFIG, tables };
 }
 
+// Each card goes into the slot with the same key in index.html (the layout).
 function render(cards) {
-  $grid.innerHTML = '';
   for (const c of cards) {
-    if (!c.visible) continue;
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.card = c.key;
+    const slot = $grid.querySelector(`[data-slot="${c.key}"]`);
+    if (!slot) continue;
+    slot.hidden = !c.visible;
     // Glide shows an empty Rich Text when the JS column errors / is empty
-    cell.innerHTML = c.html || '';
-    $grid.appendChild(cell);
+    slot.innerHTML = c.visible ? (c.html || '') : '';
   }
 }
 

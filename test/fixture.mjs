@@ -14,6 +14,8 @@ const weekStart = (k) => MON - k * WEEK; // k=0 current, 1 = -1w ...
 const f = (keys) => Object.fromEntries(keys.map((k) => [k, k]));
 export const TEST_CONFIG = {
   ...CONFIG,
+  // tests pin their own switches (the real ones in js/config.js are a deployment choice)
+  components: { won: false, wonValue: false, totalQuoted: false },
   tables: {
     rfqs: { table: 'x', fields: f(['rowId', 'receivedDate', 'currentStatus', 'archive', 'customerName']) },
     companies: { table: 'x', fields: f(['name', 'addedDate', 'localCurrency']) },
